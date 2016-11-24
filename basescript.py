@@ -5,31 +5,28 @@ import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
 
-
-url = 'http://ws.audioscrobbler.com/2.0/?method=user.getinfo&user=ashkon91&api_key=361fad39798b9291b9cb37f447c829cc&format=json'
-urltracks = 'http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=ashkon91&api_key=361fad39798b9291b9cb37f447c829cc&format=json'
+url = 'http://ws.audioscrobbler.com/2.0/'
 
 data = urlopen(url)
 response = data.read()
 vals = json.loads(response)
 songs = []
-def songsPerPage(urltracks, pagenum):
-	print pagenum
-	song = []
-	info = {'limit':'200','page':pagenum}
-	response2 = requests.get(urltracks, data=info )
-	json_data = json.loads(response2.text)
-	pp.pprint(json_data['recenttracks'])
-	for track in json_data['recenttracks']['track']:
-		song.append(track['name'])
-	return song
+def songsPerPage(url, pagenum):
+    song = []
+    payload = {'method':'user.getrecenttracks', 'user':user, 'api_key':api_key, 'limit':'200', 'page':pagenum, 'format':'json'}
+    response = requests.get(url, data=payload )
+    json_data = json.loads(response.text)
 
-doto = {'limit':'200'}
-responsedata = requests.get(urltracks, data = doto)
+    for track in json_data['recenttracks']['track']:
+        song.append(track['name'])
+    return song
+
+testpayload = { 'method':'user.getrecenttracks', 'user':'ashkon91', 'api_key': '361fad39798b9291b9cb37f447c829cc', 'format':'json'}
+
+responsedata = requests.get(url, params = testpayload)
 jsond = json.loads(responsedata.text)
 totalPages = int(jsond['recenttracks']['@attr']['totalPages'])
+print totalPages
 
 for i in range(totalPages):
-	songs += songsPerPage(urltracks, str(i+1))
-	print len(songs)
-print len(songs)
+    songs += songsPerPage(urltracks, str(i+1))
