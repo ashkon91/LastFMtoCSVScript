@@ -21,7 +21,7 @@ def songsPerPage(url, pagenum, user, api_key):
         song = []
         song.append(track['artist']['#text'])
         song.append(track['name'])
-        song.append(track['date']['#text'])
+        song.append(stringCleaner(track['date']['#text']))
         songs.append(song)
     return songs
 
@@ -30,16 +30,18 @@ def writeToCSV(songs,f):
         writer = csv.writer(f)
         writer.writerow( ("ARTIST", "SONG", "DATE") )
         for song in songs:
-            print song
             writer.writerow( (song[0].encode("utf-8"), song[1].encode("utf-8"), song[2].encode("utf-8") ))    
     finally:
         f.close()
 
+def stringCleaner(song):
+    songList = song.split()
+    return songList[1] + " "+ songList[2]
+    
 songs = []
 
 payload = { 'method':'user.getrecenttracks', 'limit':'200','user':'Ashkon91', 'api_key': '361fad39798b9291b9cb37f447c829cc', 'format':'json'}
 
-print "ENTER"
 
 responsedata = requests.get(url, params = payload)
 jsond = json.loads(responsedata.text)
@@ -49,6 +51,5 @@ for i in range(totalPages):
     print i,len(songs)
     songs += songsPerPage(url, str(i+1), 'Ashkon91', api_key )
 
-print "END"
 writeToCSV(songs,f)
 
