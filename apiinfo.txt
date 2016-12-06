@@ -1,0 +1,4 @@
+pplication name	Music Visualization
+API key	361fad39798b9291b9cb37f447c829cc
+Shared secret	cfc16970b5d080d8ce2284121e272a90
+Registered to	ashkon91
